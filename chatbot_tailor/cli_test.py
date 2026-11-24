@@ -8,9 +8,10 @@ import pytest
 from typer.testing import CliRunner
 
 import chatbot_tailor.cli as cli_module
-from chatbot_tailor import discover_logic
+from chatbot_tailor import discover_logic, fetch_logic
 from chatbot_tailor.cli import app
 from chatbot_tailor.discover_logic import DiscoverResult, Hint
+from chatbot_tailor.fetch_logic import FetchResult
 
 runner = CliRunner()
 
@@ -43,3 +44,38 @@ def test_typer_main_invokes_app(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(cli_module, "app", app_mock)
     cli_module.typer_main()
     app_mock.assert_called_once()
+
+
+def test_fetch_logs_skips_and_exits_zero(
+    monkeypatch: pytest.MonkeyPatch, caplog: pytest.LogCaptureFixture, tmp_path: Path
+) -> None:
+    caplog.set_level(logging.INFO)
+    result = FetchResult(
+        exit_code=0,
+        written=["product"],
+        skipped=["https://example.com/x: HTTP 404"],
+        brand_path=tmp_path / "brand.yaml",
+    )
+    monkeypatch.setattr(fetch_logic, "fetch", lambda directory: result)
+    invoked = runner.invoke(app, ["fetch", str(tmp_path)])
+    assert invoked.exit_code == 0
+    text = invoked.output + caplog.text
+    assert "https://example.com/x: HTTP 404" in text
+    assert "brand.yaml" in text
+    assert "pages: 1" in text
+
+
+def test_fetch_zero_survivors_exits_one(
+    monkeypatch: pytest.MonkeyPatch, caplog: pytest.LogCaptureFixture, tmp_path: Path
+) -> None:
+    caplog.set_level(logging.INFO)
+    result = FetchResult(exit_code=1, skipped=["https://example.com/x: empty extract"], detail="no pages survived")
+    monkeypatch.setattr(fetch_logic, "fetch", lambda directory: result)
+    invoked = runner.invoke(app, ["fetch", str(tmp_path)])
+    assert invoked.exit_code == 1
+    assert "no pages survived" in invoked.output + caplog.text
+
+
+def test_fetch_without_directory_exits_two() -> None:
+    invoked = runner.invoke(app, ["fetch"])
+    assert invoked.exit_code == 2
