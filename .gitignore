@@ -38,3 +38,7 @@ CHANGELOG-dev.md
 # MkDocs build output
 site/
 # === OK_EDIT: path-sync gitignore ===
+
+# Generated pages and Terraform directories hold third-party content
+cache/
+out/

@@ -96,5 +96,4 @@ jobs:
   # Repo-specific jobs: add YAML here (same 2-space indent as pre_job, lint, etc.).
 
 # === DO_NOT_EDIT: path-sync jobs ===
-
 # === OK_EDIT: path-sync jobs ===

@@ -4,12 +4,15 @@
 [project]
 name = "chatbot-tailor"
 version = "0.1.0"
-description = "Package description"
+description = "Turn one company URL into a deployable aws-chatbot Terraform directory"
 requires-python = ">=3.13"
 license = "MIT"
 license-files = ["LICENSE"]
 readme = "README.md"
-dependencies = []
+dependencies = [
+  "httpx>=0.28.1",
+  "trafilatura>=2.0.0",
+]
 
 [build-system]
 requires = ["hatchling"]
@@ -33,12 +36,6 @@ exclude = [
   "*_test/",
 ]
 # === OK_EDIT: path-sync wheel ===
-
-# === DO_NOT_EDIT: path-sync pkg-ext ===
-[tool.pkg-ext]
-tag_prefix = "v"
-max_bump_type = "minor"
-# === OK_EDIT: path-sync pkg-ext ===
 
 # === DO_NOT_EDIT: path-sync ruff ===
 [tool.ruff]
@@ -108,10 +105,6 @@ dev-test = [
 dev = [{include-group = "dev-lint"}, {include-group = "dev-test"}]
 # === OK_EDIT: path-sync dev ===
 
-# === DO_NOT_EDIT: path-sync release ===
-release = ["pkg-ext"]
-# === OK_EDIT: path-sync release ===
-# 
 # === DO_NOT_EDIT: path-sync docs ===
 docs = [
   "mkdocs-material>=9.5",
