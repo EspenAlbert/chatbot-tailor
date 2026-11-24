@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://example.com/product/a?utm=1</loc>
+  </url>
+  <url>
+    <loc>https://example.com/private/secret</loc>
+  </url>
+  <url>
+    <loc>https://example.com/blog/2024/01/post</loc>
+  </url>
+  <url>
+    <loc>https://example.com/careers</loc>
+  </url>
+</urlset>

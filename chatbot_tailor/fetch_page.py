@@ -6,40 +6,28 @@ byline, and cache-path code. Writing pages to disk belongs to the fetch command.
 
 from __future__ import annotations
 
-from collections.abc import Callable
-from dataclasses import dataclass
-
 import httpx
 import trafilatura
+from model_lib import Event
 
 from chatbot_tailor import headings, prose, urls
+from chatbot_tailor.http import Get, http_get
 
-Get = Callable[[str], httpx.Response]
 
-
-@dataclass(frozen=True)
-class Page:
+class Page(Event):
     url: str
+    # The page URL on line 1, then the extracted markdown with `{#id}` heading markers.
     source: str
-    """The page URL on line 1, then the extracted markdown with `{#id}` heading markers."""
 
     @property
     def word_count(self) -> int:
         return prose.prose_word_count(self.source)
 
 
-@dataclass(frozen=True)
-class Skipped:
+class Skipped(Event):
     url: str
     reason: str
     status: int | None = None
-
-
-def http_get(url: str) -> httpx.Response:
-    with httpx.Client(follow_redirects=True, timeout=30) as client:
-        response = client.get(url)
-        response.read()
-        return response
 
 
 def fetch_page(url: str, *, get: Get = http_get) -> Page | Skipped:

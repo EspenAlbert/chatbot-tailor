@@ -5,8 +5,9 @@ Copied from py-play anki_nuggets/urls.py at 2d04330, without the GitHub and gist
 
 from __future__ import annotations
 
-from pathlib import PurePosixPath
-from urllib.parse import urldefrag, urlsplit
+from datetime import date
+from pathlib import Path, PurePosixPath
+from urllib.parse import urldefrag, urlsplit, urlunsplit
 
 
 def page_url(url: str) -> str:
@@ -18,3 +19,26 @@ def slug_from_url(url: str) -> str:
     if not segments:
         return ""
     return PurePosixPath(segments[-1]).stem.lower()
+
+
+def strip_query_fragment(url: str) -> str:
+    split = urlsplit(url)
+    return urlunsplit((split.scheme, split.netloc, split.path, "", ""))
+
+
+def origin(url: str) -> str:
+    split = urlsplit(url)
+    return f"{split.scheme}://{split.netloc}"
+
+
+def same_origin(url: str, base: str) -> bool:
+    return origin(url).lower() == origin(base).lower()
+
+
+def path_of(url: str) -> str:
+    return urlsplit(url).path or "/"
+
+
+def candidates_path(workspace_root: Path, day: date, url: str) -> Path:
+    host = (urlsplit(url).hostname or "").lower()
+    return workspace_root / "cache" / "chatbot-tailor" / f"{day:%Y-%m-%d}" / host / "candidates.yaml"

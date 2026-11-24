@@ -1,0 +1,5 @@
+# Example
+
+- [Product](https://example.com/product)
+- https://example.com/pricing
+- https://other.com/external
