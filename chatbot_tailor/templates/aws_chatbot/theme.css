@@ -1,0 +1,57 @@
+/* MongoDB brand palette over Chainlit's CSS variables.
+ *
+ * Copied from aws-chatbot chatbot/assets/public/theme.css at b8f3217.
+ * chatbot-tailor fills __PRIMARY_LIGHT__ and __PRIMARY_DARK__ from the
+ * tailor.yaml primary_color, in HSL channels.
+ *
+ * Chainlit stores colors as bare HSL channels ("210 40% 20%"), not
+ * full hsl() values, because Tailwind composes them with opacity. Keep the
+ * three-number form.
+ *
+ * Base values:
+ *   Slate       #001E2B
+ *   OffWhite    #FDFFF5
+ *
+ * Chainlit toggles the light/dark classes on document.documentElement.
+ */
+
+:root,
+.light {
+    --primary: __PRIMARY_LIGHT__;
+    --primary-foreground: 0 0% 100%;
+    --ring: __PRIMARY_LIGHT__;
+    --accent: 145.3 100% 95%;
+    --accent-foreground: 198.1 100% 8.4%; /* Slate */
+    --foreground: 198.1 100% 8.4%; /* Slate */
+    --card-foreground: 198.1 100% 8.4%;
+    --sidebar-primary: __PRIMARY_LIGHT__;
+    --sidebar-ring: __PRIMARY_LIGHT__;
+}
+
+.dark {
+    --primary: __PRIMARY_DARK__;
+    --primary-foreground: 198.1 100% 8.4%; /* Slate text on green */
+    --ring: __PRIMARY_DARK__;
+    --background: 198.1 100% 8.4%; /* Slate, the brand dark background */
+    --foreground: 72 100% 98%; /* OffWhite */
+    --card: 198.1 40% 12%;
+    --card-foreground: 72 100% 98%;
+    --popover: 198.1 40% 12%;
+    --popover-foreground: 72 100% 98%;
+    --secondary: 198.1 30% 16%;
+    --secondary-foreground: 72 100% 98%;
+    --muted: 198.1 25% 18%;
+    --muted-foreground: 72 30% 88%;
+    --accent: 198.1 30% 18%;
+    --accent-foreground: 72 100% 98%;
+    --border: 198.1 25% 20%;
+    --input: 198.1 25% 20%;
+    --sidebar-background: 198.1 45% 6%;
+    --sidebar-foreground: 72 100% 98%;
+    --sidebar-primary: __PRIMARY_DARK__;
+    --sidebar-primary-foreground: 198.1 100% 8.4%;
+    --sidebar-accent: 198.1 35% 14%;
+    --sidebar-accent-foreground: 72 100% 98%;
+    --sidebar-border: 198.1 25% 20%;
+    --sidebar-ring: __PRIMARY_DARK__;
+}

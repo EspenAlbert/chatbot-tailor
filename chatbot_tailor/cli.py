@@ -8,7 +8,7 @@ from pathlib import Path
 import typer
 from pydantic import ValidationError
 
-from chatbot_tailor import discover_logic, fetch_logic
+from chatbot_tailor import check_logic, discover_logic, fetch_logic, render_logic
 from chatbot_tailor.discover_logic import DiscoverInput, Hint
 
 logger = logging.getLogger(__name__)
@@ -50,6 +50,28 @@ def fetch(directory: Path = typer.Argument(..., help="Directory with pages.yaml 
     logger.info(f"pages: {len(result.written)}")
     if result.exit_code != 0:
         logger.error(result.detail)
+        raise typer.Exit(result.exit_code)
+
+
+@app.command()
+def check(directory: Path = typer.Argument(..., help="Directory with tailor.yaml, pages/, and brand.yaml.")) -> None:
+    result = check_logic.check(directory)
+    for line in result.lines:
+        logger.info(line)
+    if result.failures:
+        raise typer.Exit(1)
+
+
+@app.command()
+def render(directory: Path = typer.Argument(..., help="Directory with tailor.yaml, pages/, and brand.yaml.")) -> None:
+    result = render_logic.render(directory)
+    for line in result.failures:
+        logger.info(line)
+    if result.out_dir:
+        logger.info(str(result.out_dir))
+    if result.exit_code != 0:
+        if result.detail:
+            logger.error(result.detail)
         raise typer.Exit(result.exit_code)
 
 

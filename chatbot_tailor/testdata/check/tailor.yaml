@@ -1,0 +1,23 @@
+app_name: blinker
+ui_name: Blinker Group
+ui_description: Asistente de suministros industriales.
+system_prompt: Eres el asistente de Blinker Group. Responde solo en español con la información de estas páginas.
+language: es
+primary_color: "#1a2b3c"
+queries:
+  - label: 1Hourtec
+    message: ¿Qué es 1Hourtec?
+    page: 1hourtec
+    quote: 1Hourtec es el servicio de entrega urgente que lleva repuestos a cualquier taller en una hora.
+  - label: Envíos hoy
+    message: ¿Cuándo se envían los pedidos?
+    page: faq
+    quote: Los pedidos realizados antes de las seis de la tarde se envían el mismo día.
+  - label: Devoluciones
+    message: ¿Cómo cambio una devolución?
+    page: faq
+    quote: Para cambiar una devolución, escribe a nuestro equipo de soporte con el número de pedido.
+  - label: Sobre la empresa
+    message: ¿A qué se dedica Blinker Group?
+    page: empresa
+    quote: Blinker Group es un proveedor industrial para el sector del automóvil en España.

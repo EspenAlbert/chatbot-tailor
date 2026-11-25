@@ -8,10 +8,11 @@ import pytest
 from typer.testing import CliRunner
 
 import chatbot_tailor.cli as cli_module
-from chatbot_tailor import discover_logic, fetch_logic
+from chatbot_tailor import check_logic, discover_logic, fetch_logic, render_logic
 from chatbot_tailor.cli import app
 from chatbot_tailor.discover_logic import DiscoverResult, Hint
 from chatbot_tailor.fetch_logic import FetchResult
+from chatbot_tailor.render_logic import RenderResult
 
 runner = CliRunner()
 
@@ -78,4 +79,69 @@ def test_fetch_zero_survivors_exits_one(
 
 def test_fetch_without_directory_exits_two() -> None:
     invoked = runner.invoke(app, ["fetch"])
+    assert invoked.exit_code == 2
+
+
+def test_check_prints_failures_and_exits_one(
+    monkeypatch: pytest.MonkeyPatch, caplog: pytest.LogCaptureFixture, tmp_path: Path
+) -> None:
+    caplog.set_level(logging.INFO)
+    result = check_logic.CheckResult(failures=[check_logic.CheckFailure(field="app_name", rule="app-name")])
+    monkeypatch.setattr(check_logic, "check", lambda directory: result)
+    invoked = runner.invoke(app, ["check", str(tmp_path)])
+    assert invoked.exit_code == 1
+    assert "app_name: app-name" in invoked.output + caplog.text
+
+
+def test_check_clean_exits_zero(
+    monkeypatch: pytest.MonkeyPatch, caplog: pytest.LogCaptureFixture, tmp_path: Path
+) -> None:
+    caplog.set_level(logging.INFO)
+    monkeypatch.setattr(check_logic, "check", lambda directory: check_logic.CheckResult())
+    invoked = runner.invoke(app, ["check", str(tmp_path)])
+    assert invoked.exit_code == 0
+
+
+def test_check_without_directory_exits_two() -> None:
+    invoked = runner.invoke(app, ["check"])
+    assert invoked.exit_code == 2
+
+
+def test_render_prints_out_dir_and_exits_zero(
+    monkeypatch: pytest.MonkeyPatch, caplog: pytest.LogCaptureFixture, tmp_path: Path
+) -> None:
+    caplog.set_level(logging.INFO)
+    out_dir = tmp_path / "out" / "blinker"
+    monkeypatch.setattr(render_logic, "render", lambda directory: RenderResult(exit_code=0, out_dir=out_dir))
+    invoked = runner.invoke(app, ["render", str(tmp_path)])
+    assert invoked.exit_code == 0
+    assert str(out_dir) in invoked.output + caplog.text
+
+
+def test_render_prints_check_failures_and_exits_one(
+    monkeypatch: pytest.MonkeyPatch, caplog: pytest.LogCaptureFixture, tmp_path: Path
+) -> None:
+    caplog.set_level(logging.INFO)
+    result = RenderResult(exit_code=1, failures=["app_name: app-name"], detail="check failed")
+    monkeypatch.setattr(render_logic, "render", lambda directory: result)
+    invoked = runner.invoke(app, ["render", str(tmp_path)])
+    assert invoked.exit_code == 1
+    text = invoked.output + caplog.text
+    assert "app_name: app-name" in text
+    assert "check failed" in text
+
+
+def test_render_prints_terraform_detail_and_exits_one(
+    monkeypatch: pytest.MonkeyPatch, caplog: pytest.LogCaptureFixture, tmp_path: Path
+) -> None:
+    caplog.set_level(logging.ERROR)
+    result = RenderResult(exit_code=1, out_dir=tmp_path, detail="terraform validate failed (1): bad")
+    monkeypatch.setattr(render_logic, "render", lambda directory: result)
+    invoked = runner.invoke(app, ["render", str(tmp_path)])
+    assert invoked.exit_code == 1
+    assert "terraform validate failed" in invoked.output + caplog.text
+
+
+def test_render_without_directory_exits_two() -> None:
+    invoked = runner.invoke(app, ["render"])
     assert invoked.exit_code == 2
