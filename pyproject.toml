@@ -30,7 +30,12 @@ exclude = ["*_examples.py", "*_test.py", "conftest.py", "test_*.json"]
 
 # === DO_NOT_EDIT: path-sync wheel ===
 [tool.hatch.build.targets.wheel]
-exclude = ["*_examples.py", "*_test.py", "conftest.py", "*_test/"]
+exclude = [
+  "*_examples.py",
+  "*_test.py",
+  "conftest.py",
+  "*_test/",
+]
 # === OK_EDIT: path-sync wheel ===
 
 # === DO_NOT_EDIT: path-sync ruff ===
@@ -80,23 +85,29 @@ exclude = [".venv/", "*test.py"]
 
 # === DO_NOT_EDIT: path-sync dev-lint ===
 [dependency-groups]
-dev-lint = ["ty==0.0.76", "ruff>=0.14", "vulture>=2.14"]
+dev-lint = [
+  "ty==0.0.76",
+  "ruff>=0.14",
+  "vulture>=2.14",
+]
 # === OK_EDIT: path-sync dev-lint ===
 
 # === DO_NOT_EDIT: path-sync dev-test ===
 dev-test = [
-    "pytest>=9.0",
-    "pytest-asyncio>=0.24",
-    "pytest-cov>=7.0",
-    "pytest-examples>=0.0.18",
-    "pytest-regressions>=2.6",
+  "pytest>=9.0",
+  "pytest-asyncio>=0.24",
+  "pytest-cov>=7.0",
+  "pytest-examples>=0.0.18",
+  "pytest-regressions>=2.6",
 ]
 # === OK_EDIT: path-sync dev-test ===
 
 # === DO_NOT_EDIT: path-sync dev ===
-dev = [{ include-group = "dev-lint" }, { include-group = "dev-test" }]
+dev = [{include-group = "dev-lint"}, {include-group = "dev-test"}]
 # === OK_EDIT: path-sync dev ===
 
 # === DO_NOT_EDIT: path-sync docs ===
-docs = ["mkdocs-material>=9.5"]
+docs = [
+  "mkdocs-material>=9.5",
+]
 # === OK_EDIT: path-sync docs ===
